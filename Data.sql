@@ -1,0 +1,136 @@
+-- Table: permissions
+CREATE TABLE permissions (
+    permission_id INT PRIMARY KEY IDENTITY(1,1),
+    permission_name NVARCHAR(255) NOT NULL UNIQUE,
+    description NVARCHAR(MAX)
+);
+
+-- Table: membership_packages
+CREATE TABLE membership_packages (
+    membership_package_id INT PRIMARY KEY IDENTITY(1,1),
+    membership_package_name NVARCHAR(255) NOT NULL UNIQUE,
+    price DECIMAL(18, 2) NOT NULL,
+    validity_period INT NOT NULL,
+    status NVARCHAR(50) NOT NULL CHECK (status IN ('active', 'inactive')),
+    created_time DATETIME NOT NULL DEFAULT GETDATE(),
+    admin_id INT
+);
+
+-- Table: users
+CREATE TABLE users (
+    user_id INT PRIMARY KEY IDENTITY(1,1),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone_number VARCHAR(50) UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name NVARCHAR(255) NOT NULL,
+    avatar VARCHAR(255),
+    role NVARCHAR(50) NOT NULL CHECK (role IN ('admin', 'member', 'doctor')),
+    status NVARCHAR(50) NOT NULL CHECK (status IN ('active', 'inactive')),
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    membership_package_id INT,
+    CONSTRAINT FK_users_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
+);
+
+-- Table: children
+CREATE TABLE children (
+    children_id INT PRIMARY KEY IDENTITY(1,1),
+    full_name NVARCHAR(255) NOT NULL,
+    age INT NOT NULL,
+    avatar VARCHAR(255),
+    member_id INT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_children_users FOREIGN KEY (member_id) REFERENCES users(user_id)
+);
+
+-- Table: growth_indicators
+CREATE TABLE growth_indicators (
+    growth_indicators_id INT PRIMARY KEY IDENTITY(1,1),
+    height INT NOT NULL,
+    weight INT NOT NULL,
+    bmi INT NOT NULL,
+    record_time DATETIME NOT NULL DEFAULT GETDATE(),
+    children_id INT NOT NULL,
+    CONSTRAINT FK_growth_indicators_children FOREIGN KEY (children_id) REFERENCES children(children_id)
+);
+
+-- Table: consultation_notes
+CREATE TABLE consultation_notes (
+    consultation_note_id INT PRIMARY KEY IDENTITY(1,1),
+    content NVARCHAR(MAX) NOT NULL,
+    record_time DATETIME NOT NULL DEFAULT GETDATE(),
+    member_id INT NOT NULL,
+    doctor_id INT NOT NULL,
+    children_id INT NOT NULL,
+    CONSTRAINT FK_consultation_notes_member FOREIGN KEY (member_id) REFERENCES users(user_id),
+    CONSTRAINT FK_consultation_notes_doctor FOREIGN KEY (doctor_id) REFERENCES users(user_id),
+    CONSTRAINT FK_consultation_notes_children FOREIGN KEY (children_id) REFERENCES children(children_id)
+);
+
+-- Table: package_permissions
+CREATE TABLE package_permissions (
+    membership_package_id INT NOT NULL,
+    permission_id INT NOT NULL,
+    PRIMARY KEY (membership_package_id, permission_id),
+    CONSTRAINT FK_package_permissions_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id),
+    CONSTRAINT FK_package_permissions_permissions FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
+);
+
+-- Table: user_memberships
+CREATE TABLE user_memberships (
+    user_membership_id INT PRIMARY KEY IDENTITY(1,1),
+    user_id INT NOT NULL,
+    membership_package_id INT NOT NULL,
+    start_date DATETIME NOT NULL DEFAULT GETDATE(),
+    end_date DATETIME,
+    status NVARCHAR(50) NOT NULL CHECK (status IN ('active', 'expired', 'cancelled')),
+    CONSTRAINT FK_user_memberships_users FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT FK_user_memberships_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
+);
+
+-- Table: categories
+CREATE TABLE categories (
+    category_id INT PRIMARY KEY IDENTITY(1,1),
+    category_name NVARCHAR(255) NOT NULL
+);
+
+-- Table: blog_contents
+CREATE TABLE blog_contents (
+    blog_content_id INT PRIMARY KEY IDENTITY(1,1),
+    title NVARCHAR(255) NOT NULL,
+    content NVARCHAR(MAX) NOT NULL,
+    thumbnail_url VARCHAR(255) NOT NULL,
+    status NVARCHAR(50) NOT NULL CHECK (status IN ('published', 'draft', 'archived')),
+    views INT NOT NULL DEFAULT 0,
+    likes INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    admin_id INT NOT NULL,
+    CONSTRAINT FK_blog_contents_admin FOREIGN KEY (admin_id) REFERENCES users(user_id)
+);
+
+-- Table: blog_categories
+CREATE TABLE blog_categories (
+    blog_content_id INT NOT NULL,
+    category_id INT NOT NULL,
+    PRIMARY KEY (blog_content_id, category_id),
+    CONSTRAINT FK_blog_categories_blog_contents FOREIGN KEY (blog_content_id) REFERENCES blog_contents(blog_content_id),
+    CONSTRAINT FK_blog_categories_categories FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+-- Table: feedbacks
+CREATE TABLE feedbacks (
+    feedback_id INT PRIMARY KEY IDENTITY(1,1),
+    rating INT NOT NULL,
+    content NVARCHAR(MAX),
+    member_id INT NOT NULL,
+    CONSTRAINT FK_feedbacks_users FOREIGN KEY (member_id) REFERENCES users(user_id)
+);
+
+-- Table: replies
+CREATE TABLE replies (
+    reply_id INT PRIMARY KEY IDENTITY(1,1),
+    content NVARCHAR(MAX) NOT NULL,
+    feedback_id INT NOT NULL,
+    admin_id INT NOT NULL,
+    CONSTRAINT FK_replies_feedbacks FOREIGN KEY (feedback_id) REFERENCES feedbacks(feedback_id),
+    CONSTRAINT FK_replies_admin FOREIGN KEY (admin_id) REFERENCES users(user_id)
+);
