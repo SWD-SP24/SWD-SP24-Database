@@ -187,3 +187,17 @@ VALUES
 (3, 8), -- Custom Growth Milestones
 (3, 9); -- Health Alerts
 
+-- Thêm gói Trial
+INSERT INTO membership_packages (membership_package_name, price, validity_period, status, created_time, admin_id)
+VALUES
+('Trial', 0, 7, 'active', '2025-01-14 08:00:00', null);
+
+-- Thêm các quyền cho gói Trial (thừa hưởng từ gói Standard)
+INSERT INTO package_permissions (membership_package_id, permission_id)
+VALUES
+(4, 1), -- Growth Tracking (thừa hưởng từ Standard)
+(4, 2), -- Growth Chart (thừa hưởng từ Standard)
+(4, 5), -- Historical Data Access (thừa hưởng từ Standard)
+(4, 4), -- Doctor Consultation (thừa hưởng từ Standard)
+(4, 7), -- Diet Recommendations (thừa hưởng từ Standard)
+(4, 8); -- Activity Suggestions
