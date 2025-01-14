@@ -19,6 +19,7 @@ CREATE TABLE membership_packages (
 -- Table: users
 CREATE TABLE users (
     user_id INT PRIMARY KEY IDENTITY(1,1),
+    uid NVARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     phone_number VARCHAR(50) UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -30,7 +31,6 @@ CREATE TABLE users (
     membership_package_id INT,
     CONSTRAINT FK_users_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
 );
-
 -- Table: children
 CREATE TABLE children (
     children_id INT PRIMARY KEY IDENTITY(1,1),
