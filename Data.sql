@@ -17,6 +17,7 @@ CREATE TABLE membership_packages (
 );
 
 -- Table: users
+-- Table: users
 CREATE TABLE users (
     user_id INT PRIMARY KEY IDENTITY(1,1),
     uid NVARCHAR(255) NOT NULL UNIQUE,
@@ -31,6 +32,7 @@ CREATE TABLE users (
     membership_package_id INT,
     CONSTRAINT FK_users_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
 );
+
 -- Table: children
 CREATE TABLE children (
     children_id INT PRIMARY KEY IDENTITY(1,1),
@@ -134,3 +136,54 @@ CREATE TABLE replies (
     CONSTRAINT FK_replies_feedbacks FOREIGN KEY (feedback_id) REFERENCES feedbacks(feedback_id),
     CONSTRAINT FK_replies_admin FOREIGN KEY (admin_id) REFERENCES users(user_id)
 );
+-- Thêm các gói thành viên
+INSERT INTO membership_packages (membership_package_name, price, validity_period, status, created_time, admin_id)
+VALUES
+('Basic', 9.99, 30, 'active', '2025-01-14 08:00:00', null),
+('Standard', 19.99, 30, 'active', '2025-01-14 08:00:00', null),
+('Premium', 49.99, 30, 'active', '2025-01-14 08:00:00', null);
+
+-- Thêm các quyền
+INSERT INTO permissions (permission_name, description)
+VALUES
+('Growth Tracking', 'Allows tracking growth metrics (height, weight).'),
+('Growth Chart', 'Provides access to growth charts (BMI, trends).'),
+('Multiple Children Tracking', 'Track data for multiple children.'),
+('Doctor Consultation', 'Share data with doctors for advice.'),
+('Historical Data Access', 'Access past growth data for analysis.'),
+('Diet Recommendations', 'Receive diet suggestions based on growth metrics.'),
+('Activity Suggestions', 'Get activity recommendations tailored to child development.'),
+('Custom Growth Milestones', 'Set and track custom milestones for child growth.'),
+('Health Alerts', 'Receive automatic alerts for health concerns.');
+
+-- Cập nhật bảng package_permissions cho từng gói thành viên, bao gồm tính năng thừa hưởng từ gói thấp hơn
+
+-- Gói Basic (thừa hưởng không có, chỉ có 3 tính năng)
+INSERT INTO package_permissions (membership_package_id, permission_id)
+VALUES
+(1, 1), -- Growth Tracking
+(1, 2), -- Growth Chart
+(1, 5); -- Historical Data Access
+
+-- Gói Standard (thừa hưởng từ gói Basic + các tính năng mới)
+INSERT INTO package_permissions (membership_package_id, permission_id)
+VALUES
+(2, 1), -- Growth Tracking (thừa hưởng từ Basic)
+(2, 2), -- Growth Chart (thừa hưởng từ Basic)
+(2, 5), -- Historical Data Access (thừa hưởng từ Basic)
+(2, 4), -- Doctor Consultation
+(2, 7), -- Diet Recommendations
+(2, 8); -- Activity Suggestions
+
+-- Gói Premium (thừa hưởng từ gói Standard + các tính năng mới)
+INSERT INTO package_permissions (membership_package_id, permission_id)
+VALUES
+(3, 1), -- Growth Tracking
+(3, 2), -- Growth Chart
+(3, 5), -- Historical Data Access
+(3, 4), -- Doctor Consultation
+(3, 6), -- Diet Recommendations
+(3, 7), -- Activity Suggestions
+(3, 8), -- Custom Growth Milestones
+(3, 9); -- Health Alerts
+
