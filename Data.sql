@@ -30,6 +30,8 @@ CREATE TABLE users (
     status NVARCHAR(50) NOT NULL CHECK (status IN ('active', 'inactive')),
     created_at DATETIME NOT NULL DEFAULT GETDATE(),
     membership_package_id INT,
+    email_activation NVARCHAR(50) NOT NULL DEFAULT 'unactivated' 
+        CHECK (email_activation IN ('unactivated', 'activated', 'failed')),
     CONSTRAINT FK_users_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
 );
 
