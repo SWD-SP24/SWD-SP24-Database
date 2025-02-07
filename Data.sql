@@ -203,3 +203,40 @@ VALUES
 (4, 4), -- Doctor Consultation (thừa hưởng từ Standard)
 (4, 7), -- Diet Recommendations (thừa hưởng từ Standard)
 (4, 8); -- Activity Suggestions
+
+CREATE TABLE PaymentTransactions (
+    PaymentTransactionId INT PRIMARY KEY IDENTITY(1,1),
+    PaymentId NVARCHAR(100) NOT NULL, -- Mã giao dịch thanh toán (do PayPal hoặc hệ thống thanh toán trả về)
+    UserId INT NOT NULL, -- ID người dùng thanh toán
+    MembershipPackageId INT NOT NULL, -- ID gói thành viên
+    Amount DECIMAL(18, 2) NOT NULL, -- Số tiền thanh toán
+    TransactionDate DATETIME NOT NULL DEFAULT GETDATE(), -- Thời gian giao dịch
+    Status NVARCHAR(50) NOT NULL CHECK (Status IN ('pending', 'success', 'failed')), -- Trạng thái giao dịch (pending, success, failed)
+    TransactionType NVARCHAR(50) NOT NULL CHECK (TransactionType IN ('payment', 'refund')), -- Loại giao dịch: thanh toán hoặc hoàn tiền
+    CONSTRAINT FK_PaymentTransactions_Users FOREIGN KEY (UserId) REFERENCES users(user_id),
+    CONSTRAINT FK_PaymentTransactions_MembershipPackages FOREIGN KEY (MembershipPackageId) REFERENCES membership_packages(membership_package_id)
+);
+
+ALTER TABLE dbo.PaymentTransactions
+DROP COLUMN TransactionType;
+ALTER TABLE dbo.PaymentTransactions
+DROP CONSTRAINT CK__PaymentTr__Trans__6166761E;
+ALTER TABLE PaymentTransactions
+ALTER COLUMN PaymentId NVARCHAR(100) NULL;
+ALTER TABLE user_memberships
+ADD PaymentTransactionId INT;
+
+-- Thiết lập mối quan hệ với bảng PaymentTransactions
+ALTER TABLE user_memberships
+ADD CONSTRAINT FK_user_memberships_payment_transactions FOREIGN KEY (PaymentTransactionId) REFERENCES PaymentTransactions(PaymentTransactionId);
+
+SELECT CONSTRAINT_NAME
+FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
+WHERE TABLE_NAME = 'users'
+  AND COLUMN_NAME = 'phone_number';
+
+  ALTER TABLE users
+DROP CONSTRAINT [UQ__users__A1936A6BE06256D0];
+
+
+
