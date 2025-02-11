@@ -238,5 +238,17 @@ WHERE TABLE_NAME = 'users'
   ALTER TABLE users
 DROP CONSTRAINT [UQ__users__A1936A6BE06256D0];
 
+-- 1. Xoá các bản ghi từ bảng package_permissions có liên quan đến gói có id = 4
+DELETE FROM package_permissions
+WHERE membership_package_id = 4;
 
+-- 2. Xoá gói thành viên có membership_package_id = 4
+DELETE FROM membership_packages
+WHERE membership_package_id = 4;
+
+-- 3. Cập nhật gói có membership_package_id = 1: set price = 0 và validity_period = 9999
+UPDATE membership_packages
+SET price = 0,
+    validity_period = 9999
+WHERE membership_package_id = 1;
 
