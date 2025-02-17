@@ -87,8 +87,10 @@ CREATE TABLE user_memberships (
     start_date DATETIME NOT NULL DEFAULT GETDATE(),
     end_date DATETIME,
     status NVARCHAR(50) NOT NULL CHECK (status IN ('active', 'expired', 'cancelled')),
+    PaymentTransactionId INT NULL, -- Thêm trực tiếp khi tạo bảng
     CONSTRAINT FK_user_memberships_users FOREIGN KEY (user_id) REFERENCES users(user_id),
     CONSTRAINT FK_user_memberships_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
+    CONSTRAINT FK_UserMemberships_PaymentTransactions FOREIGN KEY (PaymentTransactionId) REFERENCES PaymentTransactions(PaymentTransactionId)
 );
 
 -- Table: categories
@@ -206,29 +208,15 @@ VALUES
 
 CREATE TABLE PaymentTransactions (
     PaymentTransactionId INT PRIMARY KEY IDENTITY(1,1),
-    PaymentId NVARCHAR(100) NOT NULL, -- Mã giao dịch thanh toán (do PayPal hoặc hệ thống thanh toán trả về)
+    PaymentId NVARCHAR(100) NULL, -- Có thể null (theo cập nhật sau này)
     UserId INT NOT NULL, -- ID người dùng thanh toán
     MembershipPackageId INT NOT NULL, -- ID gói thành viên
-    Amount DECIMAL(18, 2) NOT NULL, -- Số tiền thanh toán
+    Amount DECIMAL(18,2) NOT NULL, -- Số tiền thanh toán
     TransactionDate DATETIME NOT NULL DEFAULT GETDATE(), -- Thời gian giao dịch
-    Status NVARCHAR(50) NOT NULL CHECK (Status IN ('pending', 'success', 'failed')), -- Trạng thái giao dịch (pending, success, failed)
-    TransactionType NVARCHAR(50) NOT NULL CHECK (TransactionType IN ('payment', 'refund')), -- Loại giao dịch: thanh toán hoặc hoàn tiền
+    Status NVARCHAR(50) NOT NULL CHECK (Status IN ('pending', 'success', 'failed')), -- Trạng thái giao dịch
     CONSTRAINT FK_PaymentTransactions_Users FOREIGN KEY (UserId) REFERENCES users(user_id),
     CONSTRAINT FK_PaymentTransactions_MembershipPackages FOREIGN KEY (MembershipPackageId) REFERENCES membership_packages(membership_package_id)
 );
-
-ALTER TABLE dbo.PaymentTransactions
-DROP COLUMN TransactionType;
-ALTER TABLE dbo.PaymentTransactions
-DROP CONSTRAINT CK__PaymentTr__Trans__6166761E;
-ALTER TABLE PaymentTransactions
-ALTER COLUMN PaymentId NVARCHAR(100) NULL;
-ALTER TABLE user_memberships
-ADD PaymentTransactionId INT;
-
--- Thiết lập mối quan hệ với bảng PaymentTransactions
-ALTER TABLE user_memberships
-ADD CONSTRAINT FK_user_memberships_payment_transactions FOREIGN KEY (PaymentTransactionId) REFERENCES PaymentTransactions(PaymentTransactionId);
 
 SELECT CONSTRAINT_NAME
 FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
