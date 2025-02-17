@@ -89,7 +89,7 @@ CREATE TABLE user_memberships (
     status NVARCHAR(50) NOT NULL CHECK (status IN ('active', 'expired', 'cancelled')),
     PaymentTransactionId INT NULL, -- Thêm trực tiếp khi tạo bảng
     CONSTRAINT FK_user_memberships_users FOREIGN KEY (user_id) REFERENCES users(user_id),
-    CONSTRAINT FK_user_memberships_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
+    CONSTRAINT FK_user_memberships_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id),
     CONSTRAINT FK_UserMemberships_PaymentTransactions FOREIGN KEY (PaymentTransactionId) REFERENCES PaymentTransactions(PaymentTransactionId)
 );
 
