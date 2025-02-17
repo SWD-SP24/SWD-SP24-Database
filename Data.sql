@@ -235,9 +235,6 @@ FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
 WHERE TABLE_NAME = 'users'
   AND COLUMN_NAME = 'phone_number';
 
-  ALTER TABLE users
-DROP CONSTRAINT [UQ__users__A1936A6BE06256D0];
-
 -- 1. Xoá các bản ghi từ bảng package_permissions có liên quan đến gói có id = 4
 DELETE FROM package_permissions
 WHERE membership_package_id = 4;
