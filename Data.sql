@@ -22,7 +22,7 @@ CREATE TABLE users (
     user_id INT PRIMARY KEY IDENTITY(1,1),
     uid NVARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
-    phone_number VARCHAR(50) UNIQUE,
+    phone_number VARCHAR(50),
     password_hash VARCHAR(255) NOT NULL,
     full_name NVARCHAR(255) NOT NULL,
     avatar VARCHAR(255),
