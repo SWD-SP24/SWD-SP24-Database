@@ -19,7 +19,7 @@ CREATE TABLE membership_packages (
 -- Table: users
 CREATE TABLE users (
     user_id INT PRIMARY KEY IDENTITY(1,1),
-    uid NVARCHAR(255) NOT NULL UNIQUE,
+    uid NVARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
     phone_number VARCHAR(50),
     password_hash VARCHAR(255) NOT NULL,
