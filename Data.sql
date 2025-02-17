@@ -17,7 +17,6 @@ CREATE TABLE membership_packages (
 );
 
 -- Table: users
--- Table: users
 CREATE TABLE users (
     user_id INT PRIMARY KEY IDENTITY(1,1),
     uid NVARCHAR(255) NOT NULL UNIQUE,
@@ -78,7 +77,18 @@ CREATE TABLE package_permissions (
     CONSTRAINT FK_package_permissions_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id),
     CONSTRAINT FK_package_permissions_permissions FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
 );
-
+-- Table: PaymentTransactions
+CREATE TABLE PaymentTransactions (
+    PaymentTransactionId INT PRIMARY KEY IDENTITY(1,1),
+    PaymentId NVARCHAR(100) NULL, -- Có thể null (theo cập nhật sau này)
+    UserId INT NOT NULL, -- ID người dùng thanh toán
+    MembershipPackageId INT NOT NULL, -- ID gói thành viên
+    Amount DECIMAL(18,2) NOT NULL, -- Số tiền thanh toán
+    TransactionDate DATETIME NOT NULL DEFAULT GETDATE(), -- Thời gian giao dịch
+    Status NVARCHAR(50) NOT NULL CHECK (Status IN ('pending', 'success', 'failed')), -- Trạng thái giao dịch
+    CONSTRAINT FK_PaymentTransactions_Users FOREIGN KEY (UserId) REFERENCES users(user_id),
+    CONSTRAINT FK_PaymentTransactions_MembershipPackages FOREIGN KEY (MembershipPackageId) REFERENCES membership_packages(membership_package_id)
+);
 -- Table: user_memberships
 CREATE TABLE user_memberships (
     user_membership_id INT PRIMARY KEY IDENTITY(1,1),
@@ -140,6 +150,9 @@ CREATE TABLE replies (
     CONSTRAINT FK_replies_feedbacks FOREIGN KEY (feedback_id) REFERENCES feedbacks(feedback_id),
     CONSTRAINT FK_replies_admin FOREIGN KEY (admin_id) REFERENCES users(user_id)
 );
+
+
+
 -- Thêm các gói thành viên
 INSERT INTO membership_packages (membership_package_name, price, validity_period, status, created_time, admin_id)
 VALUES
@@ -160,7 +173,7 @@ VALUES
 ('Custom Growth Milestones', 'Set and track custom milestones for child growth.'),
 ('Health Alerts', 'Receive automatic alerts for health concerns.');
 
--- Cập nhật bảng package_permissions cho từng gói thành viên, bao gồm tính năng thừa hưởng từ gói thấp hơn
+-- Cập nhật bảng package_permissions cho từng gói thành viên
 
 -- Gói Basic (thừa hưởng không có, chỉ có 3 tính năng)
 INSERT INTO package_permissions (membership_package_id, permission_id)
@@ -206,23 +219,6 @@ VALUES
 (4, 7), -- Diet Recommendations (thừa hưởng từ Standard)
 (4, 8); -- Activity Suggestions
 
-CREATE TABLE PaymentTransactions (
-    PaymentTransactionId INT PRIMARY KEY IDENTITY(1,1),
-    PaymentId NVARCHAR(100) NULL, -- Có thể null (theo cập nhật sau này)
-    UserId INT NOT NULL, -- ID người dùng thanh toán
-    MembershipPackageId INT NOT NULL, -- ID gói thành viên
-    Amount DECIMAL(18,2) NOT NULL, -- Số tiền thanh toán
-    TransactionDate DATETIME NOT NULL DEFAULT GETDATE(), -- Thời gian giao dịch
-    Status NVARCHAR(50) NOT NULL CHECK (Status IN ('pending', 'success', 'failed')), -- Trạng thái giao dịch
-    CONSTRAINT FK_PaymentTransactions_Users FOREIGN KEY (UserId) REFERENCES users(user_id),
-    CONSTRAINT FK_PaymentTransactions_MembershipPackages FOREIGN KEY (MembershipPackageId) REFERENCES membership_packages(membership_package_id)
-);
-
-SELECT CONSTRAINT_NAME
-FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
-WHERE TABLE_NAME = 'users'
-  AND COLUMN_NAME = 'phone_number';
-
 -- 1. Xoá các bản ghi từ bảng package_permissions có liên quan đến gói có id = 4
 DELETE FROM package_permissions
 WHERE membership_package_id = 4;
@@ -236,3 +232,4 @@ UPDATE membership_packages
 SET price = 0,
     validity_period = 9999
 WHERE membership_package_id = 1;
+
