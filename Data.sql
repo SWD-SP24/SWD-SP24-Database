@@ -232,4 +232,38 @@ UPDATE membership_packages
 SET price = 0,
     validity_period = 9999
 WHERE membership_package_id = 1;
+CREATE TABLE Vaccine (
+    id INT PRIMARY KEY,
+    name VARCHAR(255),
+    description NVARCHAR(255),
+    doses_required INT
+);
+
+CREATE TABLE Vaccination_Schedule (
+    id INT PRIMARY KEY,
+    vaccine_id INT,
+    recommended_age_months INT,
+    FOREIGN KEY (vaccine_id) REFERENCES Vaccine(id)
+);
+CREATE TABLE Deviation_Analysis (
+    id INT PRIMARY KEY,
+    growth_record_id INT,
+    computed_value DECIMAL(5,2),
+    deviation_percentage DECIMAL(5,2),
+    FOREIGN KEY (growth_record_id) REFERENCES growth_indicators(growth_indicators_id)
+);
+CREATE TABLE WHO_Growth_Standards (
+    id INT PRIMARY KEY,
+    age_months INT,
+    gender VARCHAR(10),  -- Thay ENUM bằng VARCHAR
+    height_avg DECIMAL(5,2),
+    weight_avg DECIMAL(5,2),
+    bmi_avg DECIMAL(5,2)
+);
+CREATE TABLE FAQ (
+    id INT PRIMARY KEY,
+    admin_id INT,
+    question NVARCHAR(255),
+    answer NVARCHAR(255)
+);
 
