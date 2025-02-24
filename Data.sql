@@ -267,3 +267,34 @@ CREATE TABLE FAQ (
     answer NVARCHAR(255)
 );
 
+ALTER TABLE Vaccination_Schedule
+ADD child_id INT NOT NULL,
+    scheduled_date DATETIME NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_child FOREIGN KEY (child_id) REFERENCES children(children_id);
+
+CREATE TABLE Tooth (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    number_of_teeth INT NOT NULL,
+    teething_period VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL
+);
+CREATE TABLE TeethingRecord (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    child_id INT NOT NULL,
+    tooth_id INT NOT NULL,
+    eruption_date DATETIME NULL,
+    record_time DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (child_id) REFERENCES children(children_id),
+    FOREIGN KEY (tooth_id) REFERENCES Tooth(id)
+);
+CREATE TABLE VaccineRecord (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    child_id INT NOT NULL,
+    vaccine_id INT NOT NULL,
+    administered_date DATETIME NOT NULL,
+    dose NVARCHAR(50) NOT NULL,
+    CONSTRAINT FK_VaccineRecord_Child FOREIGN KEY (child_id) REFERENCES Child(id),
+    CONSTRAINT FK_VaccineRecord_Vaccine FOREIGN KEY (vaccine_id) REFERENCES Vaccine(id)
+);
+
