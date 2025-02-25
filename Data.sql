@@ -31,6 +31,10 @@ CREATE TABLE users (
     membership_package_id INT,
     email_activation NVARCHAR(50) NOT NULL DEFAULT 'unactivated' 
         CHECK (email_activation IN ('unactivated', 'activated', 'failed')),
+    address VARCHAR(100),
+    zipcode VARCHAR(50),
+    state VARCHAR(50),
+    phone_number VARCHAR(50),
     CONSTRAINT FK_users_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
 );
 
