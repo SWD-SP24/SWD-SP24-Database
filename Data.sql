@@ -269,7 +269,6 @@ CREATE TABLE WHO_Growth_Standards (
 
 CREATE TABLE FAQ (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    admin_id INT,
     question NVARCHAR(255),
     answer NVARCHAR(255)
 );
