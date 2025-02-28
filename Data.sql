@@ -52,9 +52,9 @@ CREATE TABLE children (
 -- Table: growth_indicators
 CREATE TABLE growth_indicators (
     growth_indicators_id INT PRIMARY KEY IDENTITY(1,1),
-    height INT NOT NULL,
-    weight INT NOT NULL,
-    bmi INT NOT NULL,
+    height DECIMAL(10,2) NOT NULL,
+    weight DECIMAL(10,2) NOT NULL,
+    bmi DECIMAL(10,2) NOT NULL,
     record_time DATETIME NOT NULL DEFAULT GETDATE(),
     children_id INT NOT NULL,
     CONSTRAINT FK_growth_indicators_children FOREIGN KEY (children_id) REFERENCES children(children_id)
