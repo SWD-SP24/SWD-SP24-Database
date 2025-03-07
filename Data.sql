@@ -291,6 +291,7 @@ CREATE TABLE TeethingRecord (
     tooth_id INT NOT NULL,
     eruption_date DATETIME NULL,
     record_time DATETIME DEFAULT GETDATE(),
+    note NVARCHAR(255) NULL,
     FOREIGN KEY (child_id) REFERENCES children(children_id),
     FOREIGN KEY (tooth_id) REFERENCES Tooth(id)
 );
