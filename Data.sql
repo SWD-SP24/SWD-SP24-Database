@@ -282,7 +282,7 @@ ADD child_id INT NOT NULL,
 CREATE TABLE Tooth (
     id INT IDENTITY(1,1) PRIMARY KEY,
     number_of_teeth INT NOT NULL,
-    teething_period VARCHAR(255) NOT NULL,
+    teething_period INT NOT NULL, -- Changed to INT for months
     name VARCHAR(255) NOT NULL
 );
 CREATE TABLE TeethingRecord (
