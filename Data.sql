@@ -307,3 +307,37 @@ CREATE TABLE VaccineRecord (
     CONSTRAINT FK_VaccineRecord_Vaccine FOREIGN KEY (vaccine_id) REFERENCES Vaccine(id)
 );
 
+INSERT INTO Tooth (number_of_teeth, teething_period, name)
+VALUES
+    (1, 228, 'Upper Right Third Molar'),
+    (2, 150, 'Upper Right Second Molar'),
+    (3, 78,  'Upper Right First Molar'),
+    (4, 132, 'Upper Right Second Premolar'),
+    (5, 126, 'Upper Right First Premolar'),
+    (6, 138, 'Upper Right Canine'),
+    (7, 102, 'Upper Right Lateral Incisor'),
+    (8, 90,  'Upper Right Central Incisor'),
+    (9, 90,  'Upper Left Central Incisor'),
+    (10, 102, 'Upper Left Lateral Incisor'),
+    (11, 138, 'Upper Left Canine'),
+    (12, 126, 'Upper Left First Premolar'),
+    (13, 132, 'Upper Left Second Premolar'),
+    (14, 78,  'Upper Left First Molar'),
+    (15, 150, 'Upper Left Second Molar'),
+    (16, 228, 'Upper Left Third Molar'),
+    (17, 228, 'Lower Left Third Molar'),
+    (18, 144, 'Lower Left Second Molar'),
+    (19, 78,  'Lower Left First Molar'),
+    (20, 138, 'Lower Left Second Premolar'),
+    (21, 132, 'Lower Left First Premolar'),
+    (22, 114, 'Lower Left Canine'),
+    (23, 90,  'Lower Left Lateral Incisor'),
+    (24, 78,  'Lower Left Central Incisor'),
+    (25, 78,  'Lower Right Central Incisor'),
+    (26, 90,  'Lower Right Lateral Incisor'),
+    (27, 114, 'Lower Right Canine'),
+    (28, 132, 'Lower Right First Premolar'),
+    (29, 138, 'Lower Right Second Premolar'),
+    (30, 78,  'Lower Right First Molar'),
+    (31, 144, 'Lower Right Second Molar'),
+    (32, 228, 'Lower Right Third Molar');
