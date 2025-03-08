@@ -34,7 +34,9 @@ CREATE TABLE users (
     address VARCHAR(100),
     zipcode VARCHAR(50),
     state VARCHAR(50),
-    phone_number VARCHAR(50),
+    specialization VARCHAR(255),
+    license_number VARCHAR(255),
+    hospital VARCHAR(255),
     CONSTRAINT FK_users_membership_packages FOREIGN KEY (membership_package_id) REFERENCES membership_packages(membership_package_id)
 );
 
