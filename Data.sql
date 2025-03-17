@@ -304,7 +304,7 @@ CREATE TABLE VaccineRecord (
     administered_date DATETIME NOT NULL,
     dose INT NOT NULL,
     next_dose_date DATETIME NULL,
-    CONSTRAINT FK_VaccineRecord_Child FOREIGN KEY (child_id) REFERENCES Child(id),
+    CONSTRAINT FK_VaccineRecord_Child FOREIGN KEY (child_id) REFERENCES children(children_id),
     CONSTRAINT FK_VaccineRecord_Vaccine FOREIGN KEY (vaccine_id) REFERENCES Vaccine(id)
 );
 
